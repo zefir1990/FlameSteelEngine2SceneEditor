@@ -1,0 +1,3 @@
+struct SceneView: View {
+    init() {}
+}

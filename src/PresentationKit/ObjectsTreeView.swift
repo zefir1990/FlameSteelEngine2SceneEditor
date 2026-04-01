@@ -1,0 +1,3 @@
+struct ObjectsTreeView: View {
+    init() {}
+}
