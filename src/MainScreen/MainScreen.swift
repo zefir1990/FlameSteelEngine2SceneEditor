@@ -1,15 +1,16 @@
+import PresentationKit
+import ReactiveTech
+
 struct MainScreen {
+    let mainScreenContext = MainScreenContext()
+
     func show() {
         print("MainScreen show")
-
-        let mainScreenContext = MainScreenContext()
-
         Presentation {
-            SceneView()
+            SceneView(objects: mainScreenContext.objects)
                 .preferredSize(.big)
-            ObjectsTreeView()
+            ObjectsTreeView(objects: mainScreenContext.objects)
                 .preferredSize(.small)
         }
-        .bind(to: mainScreenContext)
     }
 }

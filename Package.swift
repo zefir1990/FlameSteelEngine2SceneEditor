@@ -16,9 +16,17 @@ excludedSources.append("Windows")
 
 let package = Package(
     name: "FlameSteelEngine2SceneEditor",
+    dependencies: [
+        .package(path: "PresentationKit"),
+        .package(path: "ReactiveTech")
+    ],
     targets: [
         .executableTarget(
             name: "FlameSteelEngine2SceneEditor",
+            dependencies: [
+                .product(name: "PresentationKit", package: "PresentationKit"),
+                .product(name: "ReactiveTech", package: "ReactiveTech")
+            ],
             path: "src",
             exclude: excludedSources
         )

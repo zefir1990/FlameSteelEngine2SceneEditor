@@ -1,4 +1,4 @@
-enum Size {
+public enum Size {
     case big
     case small
 }
