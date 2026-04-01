@@ -1,0 +1,3 @@
+protocol App {
+    func run()
+}
