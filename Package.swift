@@ -18,14 +18,16 @@ let package = Package(
     name: "FlameSteelEngine2SceneEditor",
     dependencies: [
         .package(path: "PresentationKit"),
-        .package(path: "ReactiveTech")
+        .package(path: "ReactiveTech"),
+        .package(path: "SceneControls")
     ],
     targets: [
         .executableTarget(
             name: "FlameSteelEngine2SceneEditor",
             dependencies: [
                 .product(name: "PresentationKit", package: "PresentationKit"),
-                .product(name: "ReactiveTech", package: "ReactiveTech")
+                .product(name: "ReactiveTech", package: "ReactiveTech"),
+                .product(name: "SceneControls", package: "SceneControls")
             ],
             path: "src",
             exclude: excludedSources
