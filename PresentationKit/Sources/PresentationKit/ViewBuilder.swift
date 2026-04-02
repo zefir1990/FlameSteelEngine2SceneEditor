@@ -1,4 +1,5 @@
 @resultBuilder
+@MainActor
 public struct ViewBuilder {
     public static func buildBlock(_ components: any View...) -> ViewGroup {
         return ViewGroup(components)

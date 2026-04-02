@@ -1,5 +1,6 @@
 import PresentationKit
 
+@MainActor
 public class MacOSViewRenderer: ViewRenderer {
     private let depth: Int
     public let ioSystem: any IOSystem

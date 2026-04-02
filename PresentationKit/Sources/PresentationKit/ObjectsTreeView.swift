@@ -9,6 +9,7 @@ public struct ObjectsTreeView: View {
         self.objects = objects
     }
 
+    @MainActor
     public func accept(_ visitor: any ViewVisitor) {
         visitor.visit(self)
     }

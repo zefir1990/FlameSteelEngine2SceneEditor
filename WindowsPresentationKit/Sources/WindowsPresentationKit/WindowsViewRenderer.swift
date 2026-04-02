@@ -1,6 +1,7 @@
 import PresentationKit
 import Foundation
 
+@MainActor
 public class WindowsViewRenderer: ViewRenderer {
     private let layer: Int
     private let parentView: (any View)?
@@ -144,6 +145,7 @@ public class WindowsViewRenderer: ViewRenderer {
 }
 
 /// Helper visitor to extract the first Text content found in a view tree.
+@MainActor
 private class SimpleTextExtractor: ViewVisitor {
     var text: String? = nil
 

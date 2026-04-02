@@ -6,8 +6,9 @@ import WinSDK
 /// from the WidgetsServer and processes them.
 public class WindowsInteractor {
     private let port: Int
-    private var isRunning = false
-    private var thread: Thread?
+    private var listenerTask: Task<Void, Never>?
+    
+    @MainActor
     private var buttonActions: [Foundation.UUID: () -> Void] = [:]
 
     public init(port: Int = 50052) {
@@ -15,33 +16,33 @@ public class WindowsInteractor {
     }
 
     /// Registers a closure to be executed when a button with the given ID is clicked.
+    @MainActor
     public func registerAction(id: Foundation.UUID, action: @escaping () -> Void) {
         buttonActions[id] = action
     }
 
-    /// Starts the UDP listener in a background thread.
+    /// Starts the UDP listener in a background task.
     public func start() {
-        guard !isRunning else { return }
-        isRunning = true
+        guard listenerTask == nil else { return }
         
-        thread = Thread { [weak self] in
-            self?.runListener()
+        // We use a detached task because recvfrom is a blocking synchronous call.
+        // This prevents the blocking call from starvation of the cooperative thread pool.
+        listenerTask = Task.detached { [weak self] in
+            await self?.runListener()
         }
-        thread?.start()
     }
 
     /// Stops the UDP listener.
     public func stop() {
-        isRunning = false
-        // In a real implementation with blocking recvfrom, we'd need to close the socket 
-        // to break the block, or use select() with a timeout.
+        listenerTask?.cancel()
+        listenerTask = nil
     }
 
-    private func runListener() {
-        runWindowsListener()
+    private func runListener() async {
+        await runWindowsListener()
     }
 
-    private func runWindowsListener() {
+    private func runWindowsListener() async {
         var wsaData = WSADATA()
         let wsaResult = WSAStartup(0x0202, &wsaData)
         if wsaResult != 0 {
@@ -78,7 +79,7 @@ public class WindowsInteractor {
         var clientAddr = sockaddr_in()
         var clientAddrLen = Int32(MemoryLayout<sockaddr_in>.size)
 
-        while isRunning {
+        while !Task.isCancelled {
             let bytesReceived = withUnsafeMutablePointer(to: &clientAddr) { clientAddrPtr in
                 clientAddrPtr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sockaddrPtr in
                     recvfrom(sock, &buffer, Int32(buffer.count), 0, sockaddrPtr, &clientAddrLen)
@@ -88,7 +89,7 @@ public class WindowsInteractor {
             if bytesReceived > 0 {
                 let data = Data(bytes: buffer, count: Int(bytesReceived))
                 if let message = String(data: data, encoding: .utf8) {
-                    processMessage(message)
+                    await processMessage(message)
                 }
             } else if bytesReceived == SOCKET_ERROR {
                 let error = WSAGetLastError()
@@ -100,7 +101,7 @@ public class WindowsInteractor {
         }
     }
 
-    private func processMessage(_ message: String) {
+    private func processMessage(_ message: String) async {
         guard let data = message.data(using: .utf8),
               let payload = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let command = payload["command"] as? String,
@@ -111,8 +112,8 @@ public class WindowsInteractor {
         if command == "ButtonAction", let uuidString = args["id"] as? String, let uuid = Foundation.UUID(uuidString: uuidString) {
             print("visit ButtonAction with UUID: \(uuidString)")
             
-            if let action = buttonActions[uuid] {
-                DispatchQueue.main.async {
+            await MainActor.run {
+                if let action = buttonActions[uuid] {
                     action()
                 }
             }

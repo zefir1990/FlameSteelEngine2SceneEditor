@@ -1,5 +1,6 @@
 import PresentationKit
 
+@MainActor
 public class LinuxViewRenderer: ViewRenderer {
     private let depth: Int
     public let ioSystem: any IOSystem

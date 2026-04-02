@@ -9,6 +9,7 @@ import LinuxPresentationKit
 #endif
 
 public enum Factory {
+    @MainActor
     public static func ioSystem() -> (any IOSystem) {
         #if os(macOS)
         let ioSystem = DefaultIOSystem()

@@ -10,6 +10,7 @@ public struct Button: View {
         self.label = label().views.first!
     }
 
+    @MainActor
     public func accept(_ visitor: any ViewVisitor) {
         visitor.visit(self)
     }

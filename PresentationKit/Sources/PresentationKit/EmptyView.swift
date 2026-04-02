@@ -7,6 +7,7 @@ public struct EmptyView: View {
         return self
     }
 
+    @MainActor
     public func accept(_ visitor: any ViewVisitor) {
         visitor.visit(self)
     }

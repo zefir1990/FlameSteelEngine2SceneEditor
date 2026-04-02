@@ -1,5 +1,6 @@
 import PresentationKit
 
+@MainActor
 public struct WindowsIOSystem: IOSystem {
     public let widgetsClient: WidgetsClient
     public let interactor: WindowsInteractor

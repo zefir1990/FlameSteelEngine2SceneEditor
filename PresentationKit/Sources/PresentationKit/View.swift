@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 public protocol View {
     var id: Foundation.UUID { get }
     associatedtype Presentation: View

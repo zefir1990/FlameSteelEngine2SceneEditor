@@ -1,3 +1,4 @@
+@MainActor
 public protocol ViewVisitor {
     func visit(_ button: Button)
     func visit(_ text: Text)

@@ -8,6 +8,7 @@ public struct Text: View {
         self.content = content
     }
 
+    @MainActor
     public func accept(_ visitor: any ViewVisitor) {
         visitor.visit(self)
     }

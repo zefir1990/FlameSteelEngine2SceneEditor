@@ -1,3 +1,4 @@
+@MainActor
 public class ConsoleViewRenderer: ViewRenderer {
     private let depth: Int
     public let ioSystem: any IOSystem
