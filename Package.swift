@@ -16,6 +16,7 @@ excludedSources.append("Windows")
 
 let package = Package(
     name: "FlameSteelEngine2SceneEditor",
+    defaultLocalization: "en",
     dependencies: [
         .package(path: "PresentationKit"),
         .package(path: "ReactiveTech"),
@@ -30,7 +31,8 @@ let package = Package(
                 .product(name: "SceneControls", package: "SceneControls")
             ],
             path: "src",
-            exclude: excludedSources
+            exclude: excludedSources,
+            resources: [.process("Resources")]
         )
     ]
 )

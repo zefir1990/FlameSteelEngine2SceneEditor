@@ -1,3 +1,4 @@
+import Foundation
 import PresentationKit
 import ReactiveTech
 import SceneControls
@@ -13,14 +14,14 @@ struct MainScreen: Screen {
                 .preferredSize(.small)
             Panel {
                 Button {
-                    print("Save scene")
+                    print("Save scene action")
                 } label: {
-                    Text("Save scene")
+                    Text(_L("save_scene"))
                 }
                 Button {
-                    print("Load scene")
+                    print("Load scene action")
                 } label: {
-                    Text("Load scene")
+                    Text(_L("load_scene"))
                 }
             }
             .preferredSize(.small)
