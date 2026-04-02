@@ -11,14 +11,13 @@ import LinuxPresentationKit
 public enum Factory {
     public static func viewRenderer() -> ViewRenderer {
         #if os(macOS)
-        return MacOSViewRenderer()
+        return MacOSViewRenderer(parent: nil)
         #elseif os(Windows)
-        return WindowsViewRenderer()
+        return WindowsViewRenderer(parent: nil)
         #elseif os(Linux)
-        return LinuxViewRenderer()
+        return LinuxViewRenderer(parent: nil)
         #else
-        // Fallback or default renderer if any
-        return ConsoleViewRenderer()
+        return ConsoleViewRenderer(parent: nil)
         #endif
     }
 }
