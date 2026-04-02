@@ -1,22 +1,48 @@
-import grpc
-import widgets_pb2
-import widgets_pb2_grpc
-import sys
+import socket
+import json
+import uuid
 
-def run():
-    print("Connecting to gRPC server at localhost:50051...")
-    with grpc.insecure_channel('localhost:50051') as channel:
-        stub = widgets_pb2_grpc.WidgetServiceStub(channel)
-        
-        # Test 1: Create a basic window
-        print("Sending CreateWindow request for 'Test Window'...")
-        response = stub.CreateWindow(widgets_pb2.CreateWindowRequest(title="Test Window", width=400, height=300))
-        print(f"Server response: {response.success}, message: {response.message}")
-        
-        # Test 2: Create another window with different title
-        print("Sending CreateWindow request for 'Second Window'...")
-        response = stub.CreateWindow(widgets_pb2.CreateWindowRequest(title="Second Window", width=200, height=100))
-        print(f"Server response: {response.success}, message: {response.message}")
+def send_command(command, args):
+    host = '127.0.0.1'
+    port = 50051
+    
+    payload = {
+        "command": command,
+        "args": args
+    }
+    
+    message = json.dumps(payload).encode('utf-8')
+    
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+        print(f"Sending UDP command: {command} to {host}:{port}")
+        sock.sendto(message, (host, port))
+
+def run_tests():
+    # Test 1: Create a root window
+    window_id = str(uuid.uuid4())
+    print(f"--- Test 1: Create Window ({window_id}) ---")
+    send_command("AddWindow", {
+        "id": window_id,
+        "title": "UDP Test Window"
+    })
+    
+    # Test 2: Add a button to that window
+    button_id = str(uuid.uuid4())
+    print(f"--- Test 2: Add Button ({button_id}) ---")
+    send_command("AddButton", {
+        "id": button_id,
+        "parentId": window_id,
+        "label": "Click Me (UDP)"
+    })
+
+    # Test 3: Add a text label
+    text_id = str(uuid.uuid4())
+    print(f"--- Test 3: Add Text ({text_id}) ---")
+    send_command("AddText", {
+        "id": text_id,
+        "parentId": window_id,
+        "text": "Sent via Python UDP Client"
+    })
 
 if __name__ == '__main__':
-    run()
+    run_tests()
