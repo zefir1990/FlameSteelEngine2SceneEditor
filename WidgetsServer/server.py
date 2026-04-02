@@ -10,6 +10,8 @@ class UDPWidgetServer:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.bind((self.host, self.port))
         
+        self.last_client_addr = None
+        
         # Registry to store widgets and sizers by their ID
         self.widgets = {}
         self.sizers = {}
@@ -19,6 +21,7 @@ class UDPWidgetServer:
     def listen(self):
         while True:
             data, addr = self.sock.recvfrom(8192)  # Increased payload size for complex trees
+            self.last_client_addr = addr
             message = data.decode('utf-8')
             
             try:
@@ -104,11 +107,24 @@ class UDPWidgetServer:
         
         if parent and parent_sizer:
             btn = wx.Button(parent, label=label)
+            btn.Bind(wx.EVT_BUTTON, lambda event, wid=wid: self._on_button_click(event, wid))
             parent_sizer.Add(btn, 0, wx.ALL | wx.EXPAND, 5)
             parent.Layout()
             
             self.widgets[wid] = btn
             print(f"Created Button: '{label}' ({wid}) inside {pid}")
+
+    def _on_button_click(self, event, wid):
+        print(f"Button clicked: {wid}")
+        if self.last_client_addr:
+            payload = {
+                "command": "ButtonAction",
+                "args": {"id": wid}
+            }
+            message = json.dumps(payload).encode('utf-8')
+            # Send back to client host:50052
+            target_addr = (self.last_client_addr[0], 50052)
+            self.sock.sendto(message, target_addr)
 
     def _add_text(self, wid, pid, text):
         parent = self.widgets.get(pid)
