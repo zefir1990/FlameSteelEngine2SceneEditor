@@ -9,8 +9,8 @@ import Darwin
 #endif
 
 /// A lightweight UDP client designed to communicate with the WidgetsServer.
-/// Since UDP is a non-blocking protocol, this client performs synchronous message 
-/// delivery, ensuring the UI rendering pass remains efficient and predictable.
+/// This client provides a generic mechanism for sending hierarchical UI 
+/// construction commands as JSON payloads.
 public struct WidgetsClient {
     private let host: String
     private let port: Int
@@ -20,13 +20,11 @@ public struct WidgetsClient {
         self.port = port
     }
 
-    /// Sends a CreateWindow command to the server via a UDP packet (synchronous).
-    public func createWindow(title: String, width: Int32, height: Int32) {
+    /// Sends a generic JSON command to the WidgetsServer.
+    public func send(command: String, args: [String: Any]) {
         let payload: [String: Any] = [
-            "command": "CreateWindow",
-            "title": title,
-            "width": width,
-            "height": height
+            "command": command,
+            "args": args
         ]
 
         guard let jsonData = try? JSONSerialization.data(withJSONObject: payload),
@@ -35,12 +33,11 @@ public struct WidgetsClient {
             return
         }
 
-        print("WidgetsClient: Sending UDP command to \(host):\(port)...")
         sendUDP(jsonString)
     }
 
     public func shutdown() {
-        print("WidgetsClient: UDP gRPC-less shutdown sequence complete.")
+        print("WidgetsClient: UDP session finalized.")
     }
 
     // --- Private Socket Implementation ---

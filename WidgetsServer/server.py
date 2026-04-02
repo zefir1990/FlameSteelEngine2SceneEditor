@@ -9,51 +9,131 @@ class UDPWidgetServer:
         self.port = port
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.bind((self.host, self.port))
-        print(f"UDP Server listening on {self.host}:{self.port}")
+        
+        # Registry to store widgets and sizers by their ID
+        self.widgets = {}
+        self.sizers = {}
+        
+        print(f"UDP Hierarchical Server listening on {self.host}:{self.port}")
 
     def listen(self):
         while True:
-            data, addr = self.sock.recvfrom(4096)
+            data, addr = self.sock.recvfrom(8192)  # Increased payload size for complex trees
             message = data.decode('utf-8')
-            print(f"Received UDP message: {message} from {addr}")
             
             try:
                 payload = json.loads(message)
                 command = payload.get("command")
+                args = payload.get("args", {})
                 
-                if command == "CreateWindow":
-                    title = payload.get("title", "New Window")
-                    width = payload.get("width", 800)
-                    height = payload.get("height", 600)
-                    
-                    # Safely trigger UI creation on the main thread
-                    wx.CallAfter(self._create_frame, title, width, height)
-                else:
-                    print(f"Unknown command: {command}")
+                print(f"Executing RPC: {command}({args.get('id', 'none')})")
+                
+                # Safely trigger UI construction on the main thread
+                wx.CallAfter(self._handle_command, command, args)
             except json.JSONDecodeError:
                 print("Failed to decode JSON payload")
             except Exception as e:
                 print(f"Error processing command: {e}")
 
-    def _create_frame(self, title, width, height):
-        frame = wx.Frame(None, title=title, size=(width, height))
+    def _handle_command(self, command, args):
+        wid = args.get("id")
+        pid = args.get("parentId")
+        
+        if command == "AddWindow":
+            self._add_window(wid, args.get("title", "Flame Steel Window"))
+        elif command == "AddButton":
+            self._add_button(wid, pid, args.get("label", "Button"))
+        elif command == "AddText":
+            self._add_text(wid, pid, args.get("text", ""))
+        elif command == "AddPanel":
+            self._add_panel(wid, pid)
+        elif command == "AddContainer":
+            self._add_container(wid, pid, args.get("type", "vertical"))
+        else:
+            print(f"Unknown RPC command: {command}")
+
+    def _add_window(self, wid, title):
+        frame = wx.Frame(None, title=title, size=(800, 600))
+        # Default vertical sizer for the frame
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        frame.SetSizer(sizer)
+        
+        self.widgets[wid] = frame
+        self.sizers[wid] = sizer
+        
         frame.Show()
-        print(f"Window '{title}' shown via UDP command.")
+        print(f"Created Frame: {wid}")
+
+    def _add_panel(self, wid, pid):
+        parent = self.widgets.get(pid)
+        parent_sizer = self.sizers.get(pid)
+        
+        if parent and parent_sizer:
+            # Create a static box with a vertical sizer
+            panel = wx.Panel(parent)
+            sizer = wx.BoxSizer(wx.VERTICAL)
+            panel.SetSizer(sizer)
+            
+            parent_sizer.Add(panel, 0, wx.ALL | wx.EXPAND, 5)
+            parent.Layout()
+            
+            self.widgets[wid] = panel
+            self.sizers[wid] = sizer
+            print(f"Created Panel: {wid} inside {pid}")
+
+    def _add_container(self, wid, pid, layout_type):
+        parent = self.widgets.get(pid)
+        parent_sizer = self.sizers.get(pid)
+        
+        if parent and parent_sizer:
+            # For a ViewGroup, we create a sub-sizer
+            orient = wx.VERTICAL if layout_type == "vertical" else wx.HORIZONTAL
+            sizer = wx.BoxSizer(orient)
+            
+            parent_sizer.Add(sizer, 1, wx.EXPAND | wx.ALL, 5)
+            parent.Layout()
+            
+            # We don't save a widget for a pure container, just the sizer
+            self.widgets[wid] = parent 
+            self.sizers[wid] = sizer
+            print(f"Created {layout_type} Container: {wid} inside {pid}")
+
+    def _add_button(self, wid, pid, label):
+        parent = self.widgets.get(pid)
+        parent_sizer = self.sizers.get(pid)
+        
+        if parent and parent_sizer:
+            btn = wx.Button(parent, label=label)
+            parent_sizer.Add(btn, 0, wx.ALL | wx.EXPAND, 5)
+            parent.Layout()
+            
+            self.widgets[wid] = btn
+            print(f"Created Button: '{label}' ({wid}) inside {pid}")
+
+    def _add_text(self, wid, pid, text):
+        parent = self.widgets.get(pid)
+        parent_sizer = self.sizers.get(pid)
+        
+        if parent and parent_sizer:
+            lbl = wx.StaticText(parent, label=text)
+            parent_sizer.Add(lbl, 0, wx.ALL, 5)
+            parent.Layout()
+            
+            self.widgets[wid] = lbl
+            print(f"Created Text: '{text}' ({wid}) inside {pid}")
 
 if __name__ == '__main__':
-    # Initialize wx.App on the main thread
     app = wx.App(False)
-    
-    # Keep the app running even if no windows are currently open
     app.SetExitOnFrameDelete(False)
     
-    # Create a hidden dummy frame to keep the event loop alive
-    dummy_frame = wx.Frame(None)
+    # Create a hidden dummy frame to keep the event loop alive on Windows
+    # until the first RPC command arrives safely.
+    dummy = wx.Frame(None)
     
-    # Start UDP server in a background thread
     server = UDPWidgetServer()
     udp_thread = threading.Thread(target=server.listen, daemon=True)
     udp_thread.start()
     
-    print("wxPython main loop started. Waiting for UDP commands...")
+    print("wxPython RPC Hierarchical Server running...")
     app.MainLoop()
+    print("exited")
