@@ -71,7 +71,11 @@ class UDPWidgetServer:
         self.widgets[wid] = frame
         self.sizers[wid] = sizer
         
+        frame.Center()
+        frame.Iconize(False)
         frame.Show()
+        frame.Raise()
+        frame.SetFocus()
         frame.Refresh()
         frame.Update()
         print(f"Created Frame: {wid}")
