@@ -2,11 +2,10 @@ import PresentationKit
 import ReactiveTech
 import SceneControls
 
-struct MainScreen {
+struct MainScreen: Screen {
     let mainScreenContext = MainScreenContext()
 
-    func show() {
-        print("MainScreen show")
+    func show() -> Presentation {
         Presentation {
             SceneView(objects: mainScreenContext.objects)
                 .preferredSize(.big)
@@ -24,6 +23,7 @@ struct MainScreen {
                     Text("Load scene")
                 }
             }
+            .preferredSize(.small)
         }
     }
 }
