@@ -25,7 +25,7 @@ public class WindowsViewRenderer: ViewRenderer {
 
     public func visit(_ button: Button) {
         print("\(indent())\(type(of: self)): visit Button")
-        let subRenderer = WindowsViewRenderer(parent: button, depth: self.depth + 1)
+        let subRenderer = WindowsViewRenderer(parent: button, depth: depth + 1)
         subRenderer.render(button.label)
     }
 
@@ -36,7 +36,7 @@ public class WindowsViewRenderer: ViewRenderer {
     public func visit(_ panel: Panel) {
         print("\(indent())\(type(of: self)): visit Panel - \(panel.children.count) children")
         for child in panel.children {
-            let subRenderer = WindowsViewRenderer(parent: panel, depth: self.depth + 1)
+            let subRenderer = WindowsViewRenderer(parent: panel, depth: depth + 1)
             subRenderer.render(child)
         }
     }
@@ -44,14 +44,14 @@ public class WindowsViewRenderer: ViewRenderer {
     public func visit(_ viewGroup: ViewGroup) {
         print("\(indent())\(type(of: self)): visit ViewGroup - \(viewGroup.views.count) views")
         for view in viewGroup.views {
-            let subRenderer = WindowsViewRenderer(parent: viewGroup, depth: self.depth + 1)
+            let subRenderer = WindowsViewRenderer(parent: viewGroup, depth: depth + 1)
             subRenderer.render(view)
         }
     }
 
     public func visit(_ modifiedView: ModifiedView) {
         print("\(indent())\(type(of: self)): visit ModifiedView - size: \(modifiedView.size)")
-        let subRenderer = WindowsViewRenderer(parent: modifiedView, depth: self.depth + 1)
+        let subRenderer = WindowsViewRenderer(parent: modifiedView, depth: depth + 1)
         subRenderer.render(modifiedView._content)
     }
 
@@ -61,13 +61,13 @@ public class WindowsViewRenderer: ViewRenderer {
 
     public func visit(_ objectsTreeView: ObjectsTreeView) {
         print("\(indent())\(type(of: self)): visit ObjectsTreeView")
-        let subRenderer = WindowsViewRenderer(parent: objectsTreeView, depth: self.depth + 1)
-        subRenderer.render(objectsTreeView.erasedPresentation)
+        let subRenderer = WindowsViewRenderer(parent: objectsTreeView, depth: depth + 1)
+        subRenderer.render(objectsTreeView.subviews)
     }
 
     public func visit(_ view: any View) {
         print("\(indent())\(type(of: self)): visit \(type(of: view))")
-        let subRenderer = WindowsViewRenderer(parent: view, depth: self.depth + 1)
-        subRenderer.render(view.erasedPresentation)
+        let subRenderer = WindowsViewRenderer(parent: view, depth: depth + 1)
+        subRenderer.render(view.subviews)
     }
 }
