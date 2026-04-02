@@ -2,8 +2,10 @@ import SwiftCompilerPlugin
 import SwiftSyntaxMacros
 
 @main
-struct PresentationKitPlugin: CompilerPlugin {
-    let providingMacros: [Macro.Type] = [
+public struct PresentationKitPlugin: CompilerPlugin {
+    public let providingMacros: [Macro.Type] = [
         UUIDIdMacro.self
     ]
+
+    public init() {}
 }

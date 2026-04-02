@@ -1,6 +1,8 @@
+import Foundation
 import PresentationKit
 import ReactiveTech
 
+@UUIDId
 public struct SceneView: View {
     public let objects: Binding<[Any]>
     

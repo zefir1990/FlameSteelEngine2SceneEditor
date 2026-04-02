@@ -1,8 +1,10 @@
+import Foundation
 import PresentationKit
 import ReactiveTech
 import SceneControls
 import EBox
 
+@UUIDId
 struct MainScreen: View {
     private let mainScreenContext = MainScreenContext()
 

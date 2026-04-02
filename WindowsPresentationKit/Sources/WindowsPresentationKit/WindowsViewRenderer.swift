@@ -5,7 +5,6 @@ public class WindowsViewRenderer: ViewRenderer {
     private let layer: Int
     private let parentView: (any View)?
     private let parentId: String?
-    private let currentId: String
     public let context: any ViewRendererContext
 
     private var windowsContext: WindowsViewRendererContext {
@@ -21,7 +20,6 @@ public class WindowsViewRenderer: ViewRenderer {
         self.context = context
         self.layer = 0
         self.parentId = nil
-        self.currentId = UUID().uuidString
     }
 
     private init(parent: (any View)?, layer: Int, context: any ViewRendererContext, parentId: String?) {
@@ -29,7 +27,6 @@ public class WindowsViewRenderer: ViewRenderer {
         self.layer = layer
         self.context = context
         self.parentId = parentId
-        self.currentId = UUID().uuidString
     }
 
     public func render(_ view: any View) {
@@ -38,6 +35,7 @@ public class WindowsViewRenderer: ViewRenderer {
     }
 
     public func visit(_ button: Button) {
+        let currentId = button.id.uuidString
         print("\(indent())visit Button (ID: \(currentId), Parent: \(parentId ?? "none"))")
         
         // Extract the first Text label from the button's content
@@ -57,7 +55,7 @@ public class WindowsViewRenderer: ViewRenderer {
     }
 
     public func visit(_ text: Text) {
-// ... (rest of the file remains same, but I'll add the helper class below)
+        let currentId = text.id.uuidString
         print("\(indent())visit Text (ID: \(currentId), Parent: \(parentId ?? "none")) - \(text.content)")
         
         // Command: AddText
@@ -69,6 +67,7 @@ public class WindowsViewRenderer: ViewRenderer {
     }
 
     public func visit(_ panel: Panel) {
+        let currentId = panel.id.uuidString
         print("\(indent())visit Panel (ID: \(currentId), Parent: \(parentId ?? "none"))")
         
         // Command: AddPanel
@@ -84,6 +83,7 @@ public class WindowsViewRenderer: ViewRenderer {
     }
 
     public func visit(_ viewGroup: ViewGroup) {
+        let currentId = viewGroup.id.uuidString
         print("\(indent())visit ViewGroup (ID: \(currentId), Parent: \(parentId ?? "none"))")
         
         // Command: AddContainer (Vertical stack by default)
@@ -101,6 +101,7 @@ public class WindowsViewRenderer: ViewRenderer {
 
     public func visit(_ modifiedView: ModifiedView) {
         // Modified views typically adjust their child; for now, we just pass through
+        // Note: For ModifiedView, we might want to keep the parentId as is since it doesn't create a new widget level yet
         let subRenderer = WindowsViewRenderer(parent: modifiedView, layer: layer + 1, context: context, parentId: parentId)
         subRenderer.render(modifiedView._content)
     }
@@ -108,6 +109,7 @@ public class WindowsViewRenderer: ViewRenderer {
     public func visit(_ emptyView: EmptyView) {}
 
     public func visit(_ objectsTreeView: ObjectsTreeView) {
+        let currentId = objectsTreeView.id.uuidString
         print("\(indent())visit ObjectsTreeView (ID: \(currentId), Parent: \(parentId ?? "none"))")
         
         // Command: AddText (Placeholder for TreeView)
@@ -122,6 +124,7 @@ public class WindowsViewRenderer: ViewRenderer {
     }
 
     public func visit(_ view: any View) {
+        let currentId = view.id.uuidString
         if parentView == nil {
             print("Rendering root window (ID: \(currentId))")
             

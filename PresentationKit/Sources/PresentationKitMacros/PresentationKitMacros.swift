@@ -10,7 +10,7 @@ public struct UUIDIdMacro: MemberMacro {
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
         return [
-            "public let id: UUID = UUID()"
+            "public let id: Foundation.UUID = Foundation.UUID()"
         ]
     }
 }
