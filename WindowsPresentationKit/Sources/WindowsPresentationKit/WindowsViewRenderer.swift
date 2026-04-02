@@ -40,18 +40,24 @@ public class WindowsViewRenderer: ViewRenderer {
     public func visit(_ button: Button) {
         print("\(indent())visit Button (ID: \(currentId), Parent: \(parentId ?? "none"))")
         
-        // Command: AddButton
+        // Extract the first Text label from the button's content
+        let extractor = SimpleTextExtractor()
+        button.label.accept(extractor)
+        let label = extractor.text ?? "Button"
+
+        // Command: AddButton with the extracted label
         windowsContext.widgetsClient.send(command: "AddButton", args: [
             "id": currentId,
             "parentId": parentId ?? "",
-            "label": "Button" // Standard label, can be refined from subview label later
+            "label": label
         ])
 
-        let subRenderer = WindowsViewRenderer(parent: button, layer: layer + 1, context: context, parentId: currentId)
-        subRenderer.render(button.label)
+        // We don't recursively render the label view as a separate widget 
+        // because its content has been absorbed into the native button label.
     }
 
     public func visit(_ text: Text) {
+// ... (rest of the file remains same, but I'll add the helper class below)
         print("\(indent())visit Text (ID: \(currentId), Parent: \(parentId ?? "none")) - \(text.content)")
         
         // Command: AddText
@@ -129,4 +135,18 @@ public class WindowsViewRenderer: ViewRenderer {
         let subRenderer = WindowsViewRenderer(parent: view, layer: layer + 1, context: context, parentId: currentId)
         subRenderer.render(view.subviews)
     }
+}
+
+/// Helper visitor to extract the first Text content found in a view tree.
+private class SimpleTextExtractor: ViewVisitor {
+    var text: String? = nil
+
+    func visit(_ button: Button) { button.label.accept(self) }
+    func visit(_ text: Text) { if self.text == nil { self.text = text.content } }
+    func visit(_ panel: Panel) { for child in panel.children { if text == nil { child.accept(self) } } }
+    func visit(_ viewGroup: ViewGroup) { for view in viewGroup.views { if text == nil { view.accept(self) } } }
+    func visit(_ modifiedView: ModifiedView) { modifiedView._content.accept(self) }
+    func visit(_ emptyView: EmptyView) {}
+    func visit(_ objectsTreeView: ObjectsTreeView) {}
+    func visit(_ view: any View) { view.subviews.accept(self) }
 }
