@@ -2,19 +2,19 @@ import PresentationKit
 
 public class LinuxViewRenderer: ViewRenderer {
     private let depth: Int
-    private let parentView: (any View)?
+    public let context: any ViewRendererContext
 
     private func indent() -> String {
         return String(repeating: "  ", count: depth)
     }
 
-    public required init(parent: (any View)?) {
-        self.parentView = parent
+    public required init(parent: (any View)?, context: any ViewRendererContext) {
+        self.context = context
         self.depth = 0
     }
 
-    private init(parent: (any View)?, depth: Int) {
-        self.parentView = parent
+    private init(parent: (any View)?, depth: Int, context: any ViewRendererContext) {
+        self.context = context
         self.depth = depth
     }
 
@@ -25,7 +25,7 @@ public class LinuxViewRenderer: ViewRenderer {
 
     public func visit(_ button: Button) {
         print("\(indent())\(type(of: self)): visit Button")
-        let subRenderer = LinuxViewRenderer(parent: button, depth: depth + 1)
+        let subRenderer = LinuxViewRenderer(parent: button, depth: self.depth + 1, context: context)
         subRenderer.render(button.label)
     }
 
@@ -36,7 +36,7 @@ public class LinuxViewRenderer: ViewRenderer {
     public func visit(_ panel: Panel) {
         print("\(indent())\(type(of: self)): visit Panel")
         for child in panel.children {
-            let subRenderer = LinuxViewRenderer(parent: panel, depth: depth + 1)
+            let subRenderer = LinuxViewRenderer(parent: panel, depth: self.depth + 1, context: context)
             subRenderer.render(child)
         }
     }
@@ -44,14 +44,14 @@ public class LinuxViewRenderer: ViewRenderer {
     public func visit(_ viewGroup: ViewGroup) {
         print("\(indent())\(type(of: self)): visit ViewGroup")
         for view in viewGroup.views {
-            let subRenderer = LinuxViewRenderer(parent: viewGroup, depth: depth + 1)
+            let subRenderer = LinuxViewRenderer(parent: viewGroup, depth: self.depth + 1, context: context)
             subRenderer.render(view)
         }
     }
 
     public func visit(_ modifiedView: ModifiedView) {
         print("\(indent())\(type(of: self)): visit ModifiedView - size: \(modifiedView.size)")
-        let subRenderer = LinuxViewRenderer(parent: modifiedView, depth: depth + 1)
+        let subRenderer = LinuxViewRenderer(parent: modifiedView, depth: self.depth + 1, context: context)
         subRenderer.render(modifiedView._content)
     }
 
@@ -59,13 +59,13 @@ public class LinuxViewRenderer: ViewRenderer {
 
     public func visit(_ objectsTreeView: ObjectsTreeView) {
         print("\(indent())\(type(of: self)): visit ObjectsTreeView")
-        let subRenderer = LinuxViewRenderer(parent: objectsTreeView, depth: depth + 1)
+        let subRenderer = LinuxViewRenderer(parent: objectsTreeView, depth: self.depth + 1, context: context)
         subRenderer.render(objectsTreeView.subviews)
     }
 
     public func visit(_ view: any View) {
         print("\(indent())\(type(of: self)): visit \(type(of: view))")
-        let subRenderer = LinuxViewRenderer(parent: view, depth: depth + 1)
+        let subRenderer = LinuxViewRenderer(parent: view, depth: self.depth + 1, context: context)
         subRenderer.render(view.subviews)
     }
 }

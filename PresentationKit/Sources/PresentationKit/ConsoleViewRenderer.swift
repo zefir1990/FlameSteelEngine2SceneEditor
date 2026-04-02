@@ -1,18 +1,18 @@
 public class ConsoleViewRenderer: ViewRenderer {
     private let depth: Int
-    private let parentView: (any View)?
+    public let context: any ViewRendererContext
 
     private func indent() -> String {
         return String(repeating: "  ", count: depth)
     }
 
-    public required init(parent: (any View)? = nil) {
-        self.parentView = parent
+    public required init(parent: (any View)? = nil, context: any ViewRendererContext = DefaultViewRendererContext()) {
+        self.context = context
         self.depth = 0
     }
 
-    private init(parent: (any View)?, depth: Int) {
-        self.parentView = parent
+    private init(parent: (any View)?, depth: Int, context: any ViewRendererContext) {
+        self.context = context
         self.depth = depth
     }
 
@@ -23,7 +23,7 @@ public class ConsoleViewRenderer: ViewRenderer {
 
     public func visit(_ button: Button) {
         print("\(indent())\(type(of: self)): visit Button")
-        let subRenderer = ConsoleViewRenderer(parent: button, depth: depth + 1)
+        let subRenderer = ConsoleViewRenderer(parent: button, depth: self.depth + 1, context: context)
         subRenderer.render(button.label)
     }
 
@@ -34,7 +34,7 @@ public class ConsoleViewRenderer: ViewRenderer {
     public func visit(_ panel: Panel) {
         print("\(indent())\(type(of: self)): visit Panel")
         for child in panel.children {
-            let subRenderer = ConsoleViewRenderer(parent: panel, depth: depth + 1)
+            let subRenderer = ConsoleViewRenderer(parent: panel, depth: self.depth + 1, context: context)
             subRenderer.render(child)
         }
     }
@@ -42,14 +42,14 @@ public class ConsoleViewRenderer: ViewRenderer {
     public func visit(_ viewGroup: ViewGroup) {
         print("\(indent())\(type(of: self)): visit ViewGroup")
         for view in viewGroup.views {
-            let subRenderer = ConsoleViewRenderer(parent: viewGroup, depth: depth + 1)
+            let subRenderer = ConsoleViewRenderer(parent: viewGroup, depth: self.depth + 1, context: context)
             subRenderer.render(view)
         }
     }
 
     public func visit(_ modifiedView: ModifiedView) {
         print("\(indent())\(type(of: self)): visit ModifiedView - size: \(modifiedView.size)")
-        let subRenderer = ConsoleViewRenderer(parent: modifiedView, depth: depth + 1)
+        let subRenderer = ConsoleViewRenderer(parent: modifiedView, depth: self.depth + 1, context: context)
         subRenderer.render(modifiedView._content)
     }
 
@@ -57,13 +57,13 @@ public class ConsoleViewRenderer: ViewRenderer {
 
     public func visit(_ objectsTreeView: ObjectsTreeView) {
         print("\(indent())\(type(of: self)): visit ObjectsTreeView")
-        let subRenderer = ConsoleViewRenderer(parent: objectsTreeView, depth: depth + 1)
+        let subRenderer = ConsoleViewRenderer(parent: objectsTreeView, depth: self.depth + 1, context: context)
         subRenderer.render(objectsTreeView.subviews)
     }
 
     public func visit(_ view: any View) {
         print("\(indent())\(type(of: self)): visit \(type(of: view))")
-        let subRenderer = ConsoleViewRenderer(parent: view, depth: depth + 1)
+        let subRenderer = ConsoleViewRenderer(parent: view, depth: self.depth + 1, context: context)
         subRenderer.render(view.subviews)
     }
 }

@@ -9,15 +9,20 @@ import LinuxPresentationKit
 #endif
 
 public enum Factory {
-    public static func viewRenderer() -> ViewRenderer {
+    public static func viewRenderer() -> (any ViewRenderer, any ViewRendererContext) {
         #if os(macOS)
-        return MacOSViewRenderer(parent: nil)
+        let context = DefaultViewRendererContext()
+        return (MacOSViewRenderer(parent: nil, context: context), context)
         #elseif os(Windows)
-        return WindowsViewRenderer(parent: nil)
+        let client = WidgetsClient() // Host/port can be customized
+        let context = WindowsViewRendererContext(widgetsClient: client)
+        return (WindowsViewRenderer(parent: nil, context: context), context)
         #elseif os(Linux)
-        return LinuxViewRenderer(parent: nil)
+        let context = DefaultViewRendererContext()
+        return (LinuxViewRenderer(parent: nil, context: context), context)
         #else
-        return ConsoleViewRenderer(parent: nil)
+        let context = DefaultViewRendererContext()
+        return (ConsoleViewRenderer(parent: nil, context: context), context)
         #endif
     }
 }
