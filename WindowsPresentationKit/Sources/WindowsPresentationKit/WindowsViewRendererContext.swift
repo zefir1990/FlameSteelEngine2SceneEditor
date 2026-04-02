@@ -1,6 +1,6 @@
 import PresentationKit
 
-public struct WindowsViewRendererContext: ViewRendererContext {
+public struct WindowsIOSystem: IOSystem {
     public let widgetsClient: WidgetsClient
     public let interactor: WindowsInteractor
 

@@ -11,19 +11,19 @@ import LinuxPresentationKit
 public enum Factory {
     public static func viewRenderer() -> (any ViewRenderer) {
         #if os(macOS)
-        let context = DefaultViewRendererContext()
-        return MacOSViewRenderer(parent: nil, context: context)
+        let ioSystem = DefaultIOSystem()
+        return MacOSViewRenderer(parent: nil, ioSystem: ioSystem)
         #elseif os(Windows)
-        let client = WidgetsClient() // Host/port can be customized
+        let client = WidgetsClient()
         let interactor = WindowsInteractor()
-        let context = WindowsViewRendererContext(widgetsClient: client, interactor: interactor)
-        return WindowsViewRenderer(parent: nil, context: context)
+        let ioSystem = WindowsIOSystem(widgetsClient: client, interactor: interactor)
+        return WindowsViewRenderer(parent: nil, ioSystem: ioSystem)
         #elseif os(Linux)
-        let context = DefaultViewRendererContext()
-        return LinuxViewRenderer(parent: nil, context: context)
+        let ioSystem = DefaultIOSystem()
+        return LinuxViewRenderer(parent: nil, ioSystem: ioSystem)
         #else
-        let context = DefaultViewRendererContext()
-        return ConsoleViewRenderer(parent: nil, context: context)
+        let context = DefaultIOSystem()
+        return ConsoleViewRenderer(parent: nil, ioSystem: ioSystem)
         #endif
     }
 }

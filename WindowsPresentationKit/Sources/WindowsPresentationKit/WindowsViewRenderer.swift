@@ -5,27 +5,27 @@ public class WindowsViewRenderer: ViewRenderer {
     private let layer: Int
     private let parentView: (any View)?
     private let parentId: String?
-    public let context: any ViewRendererContext
+    public let ioSystem: any IOSystem
 
-    private var windowsContext: WindowsViewRendererContext {
-        return context as! WindowsViewRendererContext
+    private var windowsContext: WindowsIOSystem {
+        return ioSystem as! WindowsIOSystem
     }
 
     private func indent() -> String {
         return String(repeating: "  ", count: layer)
     }
 
-    public required init(parent: (any View)?, context: any ViewRendererContext) {
+    public required init(parent: (any View)?, ioSystem: any IOSystem) {
         self.parentView = parent
-        self.context = context
+        self.ioSystem = ioSystem
         self.layer = 0
         self.parentId = nil
     }
 
-    private init(parent: (any View)?, layer: Int, context: any ViewRendererContext, parentId: String?) {
+    private init(parent: (any View)?, layer: Int, ioSystem: any IOSystem, parentId: String?) {
         self.parentView = parent
         self.layer = layer
-        self.context = context
+        self.ioSystem = ioSystem
         self.parentId = parentId
     }
 
@@ -77,7 +77,7 @@ public class WindowsViewRenderer: ViewRenderer {
         ])
 
         for child in panel.children {
-            let subRenderer = WindowsViewRenderer(parent: panel, layer: layer + 1, context: context, parentId: currentId)
+            let subRenderer = WindowsViewRenderer(parent: panel, layer: layer + 1, ioSystem: ioSystem, parentId: currentId)
             subRenderer.render(child)
         }
     }
@@ -94,7 +94,7 @@ public class WindowsViewRenderer: ViewRenderer {
         ])
 
         for view in viewGroup.views {
-            let subRenderer = WindowsViewRenderer(parent: viewGroup, layer: layer + 1, context: context, parentId: currentId)
+            let subRenderer = WindowsViewRenderer(parent: viewGroup, layer: layer + 1, ioSystem: ioSystem, parentId: currentId)
             subRenderer.render(view)
         }
     }
@@ -102,7 +102,7 @@ public class WindowsViewRenderer: ViewRenderer {
     public func visit(_ modifiedView: ModifiedView) {
         // Modified views typically adjust their child; for now, we just pass through
         // Note: For ModifiedView, we might want to keep the parentId as is since it doesn't create a new widget level yet
-        let subRenderer = WindowsViewRenderer(parent: modifiedView, layer: layer + 1, context: context, parentId: parentId)
+        let subRenderer = WindowsViewRenderer(parent: modifiedView, layer: layer + 1, ioSystem: ioSystem, parentId: parentId)
         subRenderer.render(modifiedView._content)
     }
 
@@ -119,7 +119,7 @@ public class WindowsViewRenderer: ViewRenderer {
             "text": "[Hierarchical Objects Tree]"
         ])
 
-        let subRenderer = WindowsViewRenderer(parent: objectsTreeView, layer: layer + 1, context: context, parentId: currentId)
+        let subRenderer = WindowsViewRenderer(parent: objectsTreeView, layer: layer + 1, ioSystem: ioSystem, parentId: currentId)
         subRenderer.render(objectsTreeView.subviews)
     }
 
@@ -135,7 +135,7 @@ public class WindowsViewRenderer: ViewRenderer {
             ])
         }
 
-        let subRenderer = WindowsViewRenderer(parent: view, layer: layer + 1, context: context, parentId: currentId)
+        let subRenderer = WindowsViewRenderer(parent: view, layer: layer + 1, ioSystem: ioSystem, parentId: currentId)
         subRenderer.render(view.subviews)
     }
 }
