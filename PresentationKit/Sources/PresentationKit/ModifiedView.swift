@@ -6,6 +6,10 @@ public struct ModifiedView: View {
         self._content = _content
         self.size = size
     }
+
+    public func accept(_ visitor: any ViewVisitor) {
+        visitor.visit(self)
+    }
 }
 
 public extension View {

@@ -6,4 +6,8 @@ public struct Button: View {
         self.action = action
         self.label = label().views.first!
     }
+
+    public func accept(_ visitor: any ViewVisitor) {
+        visitor.visit(self)
+    }
 }
