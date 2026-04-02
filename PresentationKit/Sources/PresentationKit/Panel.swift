@@ -1,7 +1,7 @@
 public struct Panel: View {
-    public let children: [View]
+    public let children: [any View]
 
-    public init(@ViewBuilder _ content: () -> [View]) {
-        self.children = content()
+    public init(@ViewBuilder _ content: () -> ViewGroup) {
+        self.children = content().views
     }
 }

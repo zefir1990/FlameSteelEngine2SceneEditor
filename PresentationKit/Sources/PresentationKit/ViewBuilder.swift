@@ -1,6 +1,6 @@
 @resultBuilder
 public struct ViewBuilder {
-    public static func buildBlock(_ components: View...) -> [View] {
-        return components
+    public static func buildBlock(_ components: any View...) -> ViewGroup {
+        return ViewGroup(components)
     }
 }

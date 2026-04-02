@@ -1,9 +1,9 @@
 public struct Button: View {
     public let action: () -> Void
-    public let label: View
+    public let label: any View
 
-    public init(_ action: @escaping () -> Void, @ViewBuilder label: () -> [View]) {
+    public init(_ action: @escaping () -> Void, @ViewBuilder label: () -> ViewGroup) {
         self.action = action
-        self.label = label().first!
+        self.label = label().views.first!
     }
 }
