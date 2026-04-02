@@ -1,4 +1,7 @@
+import Foundation
+
 public protocol View {
+    var id: UUID { get }
     associatedtype Presentation: View
     @ViewBuilder var presentation: Presentation { get }
     var subviews: any View { get }

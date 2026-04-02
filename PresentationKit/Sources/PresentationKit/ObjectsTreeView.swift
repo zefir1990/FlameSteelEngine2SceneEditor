@@ -1,5 +1,7 @@
+import Foundation
 import ReactiveTech
 
+@UUIDId
 public struct ObjectsTreeView: View {
     public let objects: Binding<[Any]>
     

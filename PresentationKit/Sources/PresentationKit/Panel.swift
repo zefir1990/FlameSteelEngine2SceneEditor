@@ -1,3 +1,6 @@
+import Foundation
+
+@UUIDId
 public struct Panel: View {
     public let children: [any View]
 

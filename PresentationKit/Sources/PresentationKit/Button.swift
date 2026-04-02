@@ -1,3 +1,6 @@
+import Foundation
+
+@UUIDId
 public struct Button: View {
     public let action: () -> Void
     public let label: any View

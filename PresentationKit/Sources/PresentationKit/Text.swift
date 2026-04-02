@@ -1,3 +1,6 @@
+import Foundation
+
+@UUIDId
 public struct Text: View {
     public let content: String
 

@@ -1,3 +1,6 @@
+import Foundation
+
+@UUIDId
 public struct ModifiedView: View {
     public let _content: any View
     public let size: Size

@@ -1,5 +1,6 @@
 import Foundation
 
+@UUIDId
 public struct ViewGroup: View {
     public let views: [any View]
     public init(_ views: [any View]) {
