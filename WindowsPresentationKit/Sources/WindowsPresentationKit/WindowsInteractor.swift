@@ -1,9 +1,6 @@
 import Foundation
 import PresentationKit
-
-#if os(Windows)
 import WinSDK
-#endif
 
 /// A dedicated interactor that listens for UDP events (e.g., ButtonActions) 
 /// from the WidgetsServer and processes them.
@@ -41,14 +38,9 @@ public class WindowsInteractor {
     }
 
     private func runListener() {
-        #if os(Windows)
         runWindowsListener()
-        #else
-        print("WindowsInteractor: UDP listening is only implemented for Windows via WinSDK.")
-        #endif
     }
 
-    #if os(Windows)
     private func runWindowsListener() {
         var wsaData = WSADATA()
         let wsaResult = WSAStartup(0x0202, &wsaData)
@@ -107,7 +99,6 @@ public class WindowsInteractor {
             }
         }
     }
-    #endif
 
     private func processMessage(_ message: String) {
         guard let data = message.data(using: .utf8),
@@ -117,7 +108,7 @@ public class WindowsInteractor {
             return
         }
 
-        if command == "ButtonAction", let uuidString = args["id"] as? String, let uuid = UUID(uuidString: uuidString) {
+        if command == "ButtonAction", let uuidString = args["id"] as? String, let uuid = Foundation.UUID(uuidString: uuidString) {
             print("visit ButtonAction with UUID: \(uuidString)")
             
             if let action = buttonActions[uuid] {
