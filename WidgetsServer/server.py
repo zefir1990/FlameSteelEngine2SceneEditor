@@ -55,6 +55,13 @@ class UDPWidgetServer:
         else:
             print(f"Unknown RPC command: {command}")
 
+    def _update_ui(self, widget):
+        top_level = widget.GetTopLevelParent()
+        if top_level:
+            top_level.Layout()
+            top_level.Refresh()
+            top_level.Update()
+
     def _add_window(self, wid, title):
         frame = wx.Frame(None, title=title, size=(800, 600))
         # Default vertical sizer for the frame
@@ -65,6 +72,8 @@ class UDPWidgetServer:
         self.sizers[wid] = sizer
         
         frame.Show()
+        frame.Refresh()
+        frame.Update()
         print(f"Created Frame: {wid}")
 
     def _add_panel(self, wid, pid):
@@ -78,7 +87,8 @@ class UDPWidgetServer:
             panel.SetSizer(sizer)
             
             parent_sizer.Add(panel, 0, wx.ALL | wx.EXPAND, 5)
-            parent.Layout()
+            panel.Layout()
+            self._update_ui(parent)
             
             self.widgets[wid] = panel
             self.sizers[wid] = sizer
@@ -94,7 +104,7 @@ class UDPWidgetServer:
             sizer = wx.BoxSizer(orient)
             
             parent_sizer.Add(sizer, 1, wx.EXPAND | wx.ALL, 5)
-            parent.Layout()
+            self._update_ui(parent)
             
             # We don't save a widget for a pure container, just the sizer
             self.widgets[wid] = parent 
@@ -109,7 +119,7 @@ class UDPWidgetServer:
             btn = wx.Button(parent, label=label)
             btn.Bind(wx.EVT_BUTTON, lambda event, wid=wid: self._on_button_click(event, wid))
             parent_sizer.Add(btn, 0, wx.ALL | wx.EXPAND, 5)
-            parent.Layout()
+            self._update_ui(parent)
             
             self.widgets[wid] = btn
             print(f"Created Button: '{label}' ({wid}) inside {pid}")
@@ -133,7 +143,7 @@ class UDPWidgetServer:
         if parent and parent_sizer:
             lbl = wx.StaticText(parent, label=text)
             parent_sizer.Add(lbl, 0, wx.ALL, 5)
-            parent.Layout()
+            self._update_ui(parent)
             
             self.widgets[wid] = lbl
             print(f"Created Text: '{text}' ({wid}) inside {pid}")

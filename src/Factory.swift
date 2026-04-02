@@ -16,7 +16,7 @@ public enum Factory {
         #elseif os(Windows)
         let client = WidgetsClient()
         let interactor = WindowsInteractor()
-        let ioSystem = WindowsIOSystem(widgetsClient: client, interactor: interactor)
+        let ioSystem = WindowsIOSystem(widgetsClient: client, interactor: interactor, mainView: MainScreen())
         return ioSystem
         #elseif os(Linux)
         let ioSystem = DefaultIOSystem()

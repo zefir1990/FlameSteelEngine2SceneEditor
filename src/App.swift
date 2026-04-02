@@ -7,8 +7,7 @@ struct App {
         print("Welcome to Flame Steel Engine 2 Scene Editor")
         EBox.initialize(localizationBundle: Bundle.module)
         let ioSystem = Factory.ioSystem()
-        let renderer = ioSystem.viewRenderer(parent: nil)
-        renderer.render(MainScreen())
+        ioSystem.handle(event: .applicationCalled)
         RunLoop.main.run()
     }
 }
