@@ -56,7 +56,7 @@ public class WindowsViewRenderer: ViewRenderer {
     }
 
     public func visit(_ emptyView: EmptyView) {
-        // No-op
+        print("\(indent())\(type(of: self)): visit EmptyView")
     }
 
     public func visit(_ objectsTreeView: ObjectsTreeView) {
