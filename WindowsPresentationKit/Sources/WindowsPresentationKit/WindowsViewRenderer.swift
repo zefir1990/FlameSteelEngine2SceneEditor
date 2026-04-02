@@ -43,6 +43,9 @@ public class WindowsViewRenderer: ViewRenderer {
         button.label.accept(extractor)
         let label = extractor.text ?? "Button"
 
+        // Register the action block to be executed when the user clicks the button
+        windowsContext.interactor.registerAction(id: button.id, action: button.action)
+
         // Command: AddButton with the extracted label
         windowsContext.widgetsClient.send(command: "AddButton", args: [
             "id": currentId,

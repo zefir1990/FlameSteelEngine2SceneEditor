@@ -11,9 +11,15 @@ public class WindowsInteractor {
     private let port: Int
     private var isRunning = false
     private var thread: Thread?
+    private var buttonActions: [Foundation.UUID: () -> Void] = [:]
 
     public init(port: Int = 50052) {
         self.port = port
+    }
+
+    /// Registers a closure to be executed when a button with the given ID is clicked.
+    public func registerAction(id: Foundation.UUID, action: @escaping () -> Void) {
+        buttonActions[id] = action
     }
 
     /// Starts the UDP listener in a background thread.
@@ -111,8 +117,14 @@ public class WindowsInteractor {
             return
         }
 
-        if command == "ButtonAction", let uuid = args["id"] as? String {
-            print("visit ButtonAction with UUID: \(uuid)")
+        if command == "ButtonAction", let uuidString = args["id"] as? String, let uuid = UUID(uuidString: uuidString) {
+            print("visit ButtonAction with UUID: \(uuidString)")
+            
+            if let action = buttonActions[uuid] {
+                DispatchQueue.main.async {
+                    action()
+                }
+            }
         }
     }
 }
