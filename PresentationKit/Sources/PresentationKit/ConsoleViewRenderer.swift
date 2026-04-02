@@ -36,4 +36,8 @@ public struct ConsoleViewRenderer: ViewRenderer {
     public func visit(_ objectsTreeView: ObjectsTreeView) {
         print("\(type(of: self)): visit ObjectsTreeView")
     }
+
+    public func visit(_ view: any View) {
+        print("\(type(of: self)): visit \(type(of: view))")
+    }
 }

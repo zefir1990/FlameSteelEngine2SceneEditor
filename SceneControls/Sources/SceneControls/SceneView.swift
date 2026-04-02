@@ -7,4 +7,8 @@ public struct SceneView: View {
     public init(objects: Binding<[Any]>) {
         self.objects = objects
     }
+
+    public func accept(_ visitor: any ViewVisitor) {
+        visitor.visit(self)
+    }
 }

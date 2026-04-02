@@ -25,4 +25,8 @@ struct MainScreen: View {
         }
         .preferredSize(.small)
     }
+
+    func accept(_ visitor: any ViewVisitor) {
+        visitor.visit(self)
+    }
 }
