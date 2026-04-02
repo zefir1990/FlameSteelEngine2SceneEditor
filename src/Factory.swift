@@ -9,7 +9,7 @@ import LinuxPresentationKit
 #endif
 
 public enum Factory {
-    public static func viewRenderer() -> (any ViewRenderer) {
+    public static func ioSystem() -> (any IOSystem) {
         #if os(macOS)
         let ioSystem = DefaultIOSystem()
         return MacOSViewRenderer(parent: nil, ioSystem: ioSystem)
@@ -17,7 +17,7 @@ public enum Factory {
         let client = WidgetsClient()
         let interactor = WindowsInteractor()
         let ioSystem = WindowsIOSystem(widgetsClient: client, interactor: interactor)
-        return WindowsViewRenderer(parent: nil, ioSystem: ioSystem)
+        return ioSystem
         #elseif os(Linux)
         let ioSystem = DefaultIOSystem()
         return LinuxViewRenderer(parent: nil, ioSystem: ioSystem)
