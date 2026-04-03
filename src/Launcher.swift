@@ -18,13 +18,14 @@ struct Launcher {
 struct Launcher {
     static func main() {
         print("Hello Launcher.swift (Non-UIKit)")
-        let app = App()
         #if PresentationKitFrontend_SwiftUI
         let ioSystem = Factory.swiftuiIOSystem()
-        app.run(ioSystem: ioSystem)
+        let app = App(ioSystem: ioSystem)
+        app.run()
         #else
         let ioSystem = Factory.wxIOSystem()
-        app.run(ioSystem: ioSystem)
+        let app = App(ioSystem: ioSystem)
+        app.run()
         #endif
     }
 }

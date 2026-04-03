@@ -4,10 +4,10 @@ import UIKit
 @MainActor
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
+    private var app: App?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        let app = App()
-        app.setup(ioSystem: Factory.uikitIOSystem())
+        self.app = App(ioSystem: Factory.uikitIOSystem())
         return true
     }
 }

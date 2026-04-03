@@ -18,10 +18,10 @@ public class UIKitViewRenderer: ViewRenderer {
         uiView.translatesAutoresizingMaskIntoConstraints = false
         vc.view.addSubview(uiView)
         NSLayoutConstraint.activate([
-            uiView.centerXAnchor.constraint(equalTo: vc.view.centerXAnchor),
-            uiView.centerYAnchor.constraint(equalTo: vc.view.centerYAnchor),
-            uiView.widthAnchor.constraint(lessThanOrEqualTo: vc.view.widthAnchor),
-            uiView.heightAnchor.constraint(lessThanOrEqualTo: vc.view.heightAnchor)
+            uiView.topAnchor.constraint(equalTo: vc.view.safeAreaLayoutGuide.topAnchor),
+            uiView.bottomAnchor.constraint(equalTo: vc.view.safeAreaLayoutGuide.bottomAnchor),
+            uiView.leadingAnchor.constraint(equalTo: vc.view.safeAreaLayoutGuide.leadingAnchor),
+            uiView.trailingAnchor.constraint(equalTo: vc.view.safeAreaLayoutGuide.trailingAnchor)
         ])
         self.rootViewController = vc
     }
