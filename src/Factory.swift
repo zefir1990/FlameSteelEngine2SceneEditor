@@ -12,7 +12,9 @@ public enum Factory {
     @MainActor
     public static func ioSystem() -> (any IOSystem) {
         #if os(macOS)
-        return MacOSIOSystem(mainView: MainScreen())
+        let client = WidgetsClient()
+        let interactor = MacOSInteractor()
+        return MacOSIOSystem(widgetsClient: client, macosInteractor: interactor, mainView: MainScreen())
         #elseif os(Windows)
         let client = WidgetsClient()
         let interactor = WindowsInteractor()
