@@ -54,6 +54,7 @@ public class SwiftUIIOSystem: IOSystem {
         window.makeKeyAndOrderFront(nil)
         
         app.activate(ignoringOtherApps: true)
+        app.run()
         #else
         print("SwiftUIIOSystem: startSwiftUI is currently implemented for native macOS AppKit only. On Catalyst, use UIKitPresentationKit or a SwiftUI App lifecycle.")
         #endif

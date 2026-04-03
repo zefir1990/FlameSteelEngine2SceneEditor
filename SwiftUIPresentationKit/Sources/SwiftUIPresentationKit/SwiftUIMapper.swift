@@ -17,9 +17,12 @@ public class SwiftUIMapper: ViewVisitor {
     public func visit(_ button: PresentationKit.Button) {
         let labelView = SwiftUIMapper.map(button.label)
         result = SwiftUI.AnyView(
-            SwiftUI.Button(action: button.action) {
+            SwiftUI.Button(action: {
+                button.action()
+            }) {
                 labelView
             }
+            .buttonStyle(.bordered)
         )
     }
 
