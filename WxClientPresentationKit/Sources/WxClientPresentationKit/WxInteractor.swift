@@ -168,6 +168,7 @@ public class WxInteractor {
     #endif
 
     private func processMessage(_ message: String) async {
+        print("Received message: \(message)")
         guard let data = message.data(using: .utf8),
               let payload = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let command = payload["command"] as? String,

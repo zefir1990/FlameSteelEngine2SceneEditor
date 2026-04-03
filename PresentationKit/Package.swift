@@ -4,7 +4,7 @@ import CompilerPluginSupport
 
 let package = Package(
     name: "PresentationKit",
-    platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6), .macCatalyst(.v13)],
+    platforms: [.macOS(.v12), .iOS(.v14), .macCatalyst(.v14)],
     products: [
         .library(
             name: "PresentationKit",

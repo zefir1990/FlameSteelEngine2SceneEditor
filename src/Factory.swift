@@ -1,11 +1,10 @@
 import PresentationKit
 import WxClientPresentationKit
 
-#if os(macOS)
-import SwiftUIPresentationKit
-#if canImport(UIKit)
+#if PresentationKitFrontend_UIKit
 import UIKitPresentationKit
-#endif
+#elseif PresentationKitFrontend_SwiftUI
+import SwiftUIPresentationKit
 #endif
 
 public enum Factory {
@@ -17,17 +16,12 @@ public enum Factory {
         return ioSystem
     }
 
-    #if os(macOS)
+    #if PresentationKitFrontend_UIKit
     @MainActor
     public static func uikitIOSystem() -> (any IOSystem) {
-        #if canImport(UIKit)
         return UIKitIOSystem(mainView: MainScreen())
-        #else
-        print("Warning: UIKit is not available on this platform/target. Build for Mac Catalyst to use UIKitPresentationKit. Switching to SwiftUI.")
-        return SwiftUIIOSystem(mainView: MainScreen()) // Fallback to SwiftUI so it still runs
-        #endif
     }
-
+    #elseif PresentationKitFrontend_SwiftUI
     @MainActor
     public static func swiftuiIOSystem() -> (any IOSystem) {
         return SwiftUIIOSystem(mainView: MainScreen())

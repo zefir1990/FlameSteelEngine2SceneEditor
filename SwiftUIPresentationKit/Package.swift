@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "SwiftUIPresentationKit",
-    platforms: [.macOS(.v12)],
+    platforms: [.macOS(.v12), .iOS(.v14), .macCatalyst(.v14)],
     products: [
         .library(name: "SwiftUIPresentationKit", targets: ["SwiftUIPresentationKit"])
     ],
