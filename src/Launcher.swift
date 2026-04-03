@@ -1,14 +1,14 @@
 import Foundation
 import PresentationKit
 
-#if PresentationKitFrontend_UIKit
+#if os(iOS) || targetEnvironment(macCatalyst)
 import UIKit
 
 @main
 @MainActor
 struct Launcher {
     static func main() {
-        print("Hello Launcher.swift (UIKit)")
+        print("Hello Launcher.swift (iOS/Catalyst)")
         UIApplicationMain(CommandLine.argc, CommandLine.unsafeArgv, nil, NSStringFromClass(AppDelegate.self))
     }
 }
