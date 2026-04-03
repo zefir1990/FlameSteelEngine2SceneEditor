@@ -17,10 +17,15 @@ var targetDependencies: [Target.Dependency] = [
     .product(name: "WxClientPresentationKit", package: "WxClientPresentationKit")
 ]
 
+#if os(macOS)
+dependencies.append(.package(path: "SwiftUIPresentationKit"))
+targetDependencies.append(.product(name: "SwiftUIPresentationKit", package: "SwiftUIPresentationKit"))
+#endif
+
 let package = Package(
     name: "FlameSteelEngine2SceneEditor",
     defaultLocalization: "en",
-    platforms: [.macOS(.v10_15)],
+    platforms: [.macOS(.v12)],
     dependencies: dependencies,
     targets: [
         .executableTarget(
