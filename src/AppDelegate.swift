@@ -7,7 +7,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private var app: App?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        #if PresentationKitFrontend_SwiftUI
+        self.app = App(ioSystem: Factory.swiftuiIOSystem())
+        #else
         self.app = App(ioSystem: Factory.uikitIOSystem())
+        #endif
         return true
     }
 }

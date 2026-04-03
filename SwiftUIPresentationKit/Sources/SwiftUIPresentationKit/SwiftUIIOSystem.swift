@@ -1,19 +1,24 @@
-#if os(macOS) && !targetEnvironment(macCatalyst)
+#if canImport(SwiftUI)
 import PresentationKit
 import SwiftUI
+
 #if canImport(AppKit)
 import AppKit
+#elseif canImport(UIKit)
+import UIKit
 #endif
 
 @MainActor
 public class SwiftUIIOSystem: IOSystem {
     private let mainView: any PresentationKit.View
     private let renderer: SwiftUIViewRenderer
+    #if canImport(UIKit)
+    private var window: UIWindow?
+    #endif
     
     public init(mainView: any PresentationKit.View) {
         self.mainView = mainView
         // Create a temporary renderer to satisfy initialization, then overwrite its ioSystem reference if needed.
-        // Actually, we can just create the renderer with ourselves as the ioSystem.
         self.renderer = SwiftUIViewRenderer(parent: mainView, ioSystem: DefaultIOSystem(mainView: mainView))
     }
     
@@ -31,6 +36,8 @@ public class SwiftUIIOSystem: IOSystem {
     public func shutdown() {
         #if canImport(AppKit)
         NSApp.terminate(nil)
+        #elseif canImport(UIKit)
+        print("SwiftUIIOSystem: Shutdown requested on UIKit platform.")
         #endif
     }
     
@@ -49,14 +56,18 @@ public class SwiftUIIOSystem: IOSystem {
             defer: false
         )
         window.center()
-        window.title = "Flame Steel Engine 2 - Native macOS"
+        window.title = "Flame Steel Engine 2 - Native macOS (SwiftUI)"
         window.contentView = NSHostingView(rootView: SwiftUIBridgeView(renderer: renderer))
         window.makeKeyAndOrderFront(nil)
         
         app.activate(ignoringOtherApps: true)
         app.run()
-        #else
-        print("SwiftUIIOSystem: startSwiftUI is currently implemented for native macOS AppKit only. On Catalyst, use UIKitPresentationKit or a SwiftUI App lifecycle.")
+        #elseif canImport(UIKit)
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        renderer.render(mainView)
+        window.rootViewController = UIHostingController(rootView: SwiftUIBridgeView(renderer: renderer))
+        window.makeKeyAndVisible()
+        self.window = window
         #endif
     }
 

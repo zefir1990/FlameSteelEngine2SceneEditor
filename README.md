@@ -54,6 +54,22 @@ Once compiled, the application can be launched from the deploy directory:
 open .build/deploy/FlameSteelEngine2SceneEditor.app
 ```
 
+## iOS Simulator Build
+
+A dedicated script `ios-simulator-build.sh` is provided for building and running the application in the iOS Simulator using the SwiftUI frontend.
+
+The script performs the following actions:
+1. Sets `PresentationKitFrontend=SwiftUI`.
+2. Compiles for `arm64-apple-ios-simulator` using the `ios-simulator.json` destination.
+3. Packages the binary into a `.app` bundle in `.build/deploy-ios/`.
+4. Boots an available iOS Simulator, installs the app, and launches it.
+
+### Usage
+
+```bash
+./ios-simulator-build.sh
+```
+
 ## Build & Run (Standard)
 
 ## License

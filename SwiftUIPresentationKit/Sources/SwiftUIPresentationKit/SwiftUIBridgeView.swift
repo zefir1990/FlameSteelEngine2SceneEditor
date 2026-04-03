@@ -1,4 +1,4 @@
-#if os(macOS) && !targetEnvironment(macCatalyst)
+#if canImport(SwiftUI)
 import PresentationKit
 import SwiftUI
 

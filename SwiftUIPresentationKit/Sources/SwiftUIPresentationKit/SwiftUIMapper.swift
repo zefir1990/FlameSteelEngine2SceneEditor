@@ -1,4 +1,4 @@
-#if os(macOS) && !targetEnvironment(macCatalyst)
+#if canImport(SwiftUI)
 import PresentationKit
 import SwiftUI
 
@@ -22,7 +22,6 @@ public class SwiftUIMapper: ViewVisitor {
             }) {
                 labelView
             }
-            .buttonStyle(.bordered)
         )
     }
 
