@@ -23,7 +23,7 @@ public enum Factory {
         #if canImport(UIKit)
         return UIKitIOSystem(mainView: MainScreen())
         #else
-        print("Warning: UIKit is not available on this platform/target. Build for Mac Catalyst to use UIKitPresentationKit.")
+        print("Warning: UIKit is not available on this platform/target. Build for Mac Catalyst to use UIKitPresentationKit. Switching to SwiftUI.")
         return SwiftUIIOSystem(mainView: MainScreen()) // Fallback to SwiftUI so it still runs
         #endif
     }
