@@ -1,11 +1,11 @@
 {
     "version": 1,
-    "target": "arm64-apple-ios14.0-simulator",
+    "target": "arm64-apple-ios15.0-simulator",
     "sdk": "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk",
     "toolchain-bin-dir": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
     "extra-cc-flags": [
         "-target",
-        "arm64-apple-ios14.0-simulator",
+        "arm64-apple-ios15.0-simulator",
         "-isysroot",
         "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk"
     ],

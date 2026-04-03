@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "target": "arm64-apple-ios14.0-macabi",
+    "target": "arm64-apple-ios15.0-macabi",
     "sdk": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
     "toolchain-bin-dir": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
     "extra-cc-flags": [

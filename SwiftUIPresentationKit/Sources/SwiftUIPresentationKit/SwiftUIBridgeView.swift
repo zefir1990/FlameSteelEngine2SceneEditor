@@ -14,11 +14,18 @@ public struct SwiftUIBridgeView: SwiftUI.View {
         SwiftUI.Group {
             if let rootView = renderer.rootView {
                 SwiftUIMapper.map(rootView)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                SwiftUI.Text("Rendering Engine View...")
+                SwiftUI.Text("No Views to Render")
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
+        }
+        #if canImport(UIKit)
+        .background(SwiftUI.Color(UIColor.systemBackground))
+        #endif
+        .onAppear {
+            print("SwiftUIBridgeView onAppear")
         }
     }
 }

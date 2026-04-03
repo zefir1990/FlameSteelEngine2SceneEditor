@@ -16,13 +16,20 @@ public class SwiftUIMapper: ViewVisitor {
 
     public func visit(_ button: PresentationKit.Button) {
         let labelView = SwiftUIMapper.map(button.label)
-        result = SwiftUI.AnyView(
-            SwiftUI.Button(action: {
-                button.action()
-            }) {
-                labelView
-            }
-        )
+        let buttonView = SwiftUI.Button(action: {
+            button.action()
+        }) {
+            labelView
+        }
+        #if os(macOS)
+        result = SwiftUI.AnyView(buttonView.buttonStyle(.bordered))
+        #else
+        if #available(iOS 15.0, *) {
+            result = SwiftUI.AnyView(buttonView.buttonStyle(.borderedProminent))
+        } else {
+            result = SwiftUI.AnyView(buttonView.buttonStyle(BorderlessButtonStyle()))
+        }
+        #endif
     }
 
     public func visit(_ text: PresentationKit.Text) {
@@ -36,6 +43,7 @@ public class SwiftUIMapper: ViewVisitor {
                     SwiftUIMapper.map(panel.children[index])
                 }
             }
+            .frame(maxWidth: .infinity)
         )
     }
 
@@ -46,6 +54,7 @@ public class SwiftUIMapper: ViewVisitor {
                     SwiftUIMapper.map(viewGroup.views[index])
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         )
     }
 
@@ -63,6 +72,7 @@ public class SwiftUIMapper: ViewVisitor {
                 SwiftUI.Text("[Objects Tree Placeholder]")
                 SwiftUIMapper.map(objectsTreeView.subviews)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         )
     }
 

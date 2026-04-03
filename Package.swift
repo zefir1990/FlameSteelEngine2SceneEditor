@@ -32,7 +32,7 @@ if frontend == "UIKit" {
 let package = Package(
     name: "FlameSteelEngine2SceneEditor",
     defaultLocalization: "en",
-    platforms: [.macOS(.v12), .iOS(.v14), .macCatalyst(.v14)],
+    platforms: [.macOS(.v12), .iOS(.v15), .macCatalyst(.v15)],
     dependencies: dependencies,
     targets: [
         .executableTarget(

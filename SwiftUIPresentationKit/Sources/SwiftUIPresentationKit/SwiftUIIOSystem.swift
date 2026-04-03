@@ -64,6 +64,7 @@ public class SwiftUIIOSystem: IOSystem {
         app.run()
         #elseif canImport(UIKit)
         let window = UIWindow(frame: UIScreen.main.bounds)
+        window.backgroundColor = .systemBackground
         renderer.render(mainView)
         window.rootViewController = UIHostingController(rootView: SwiftUIBridgeView(renderer: renderer))
         window.makeKeyAndVisible()
