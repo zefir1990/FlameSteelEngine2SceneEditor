@@ -1,5 +1,6 @@
 // swift-tools-version: 5.9
 import PackageDescription
+import Foundation
 
 var dependencies: [Package.Dependency] = [
     .package(path: "PresentationKit"),
@@ -17,15 +18,16 @@ var targetDependencies: [Target.Dependency] = [
     .product(name: "WxClientPresentationKit", package: "WxClientPresentationKit")
 ]
 
-#if os(macOS) && !targetEnvironment(macCatalyst)
-dependencies.append(.package(path: "SwiftUIPresentationKit"))
-targetDependencies.append(.product(name: "SwiftUIPresentationKit", package: "SwiftUIPresentationKit"))
-#endif
 
-#if os(macOS) || os(iOS) || targetEnvironment(macCatalyst)
-dependencies.append(.package(path: "UIKitPresentationKit"))
-targetDependencies.append(.product(name: "UIKitPresentationKit", package: "UIKitPresentationKit"))
-#endif
+let frontend = ProcessInfo.processInfo.environment["PresentationKitFrontend"] ?? "wx"
+
+if frontend == "UIKit" {
+    dependencies.append(.package(path: "UIKitPresentationKit"))
+    targetDependencies.append(.product(name: "UIKitPresentationKit", package: "UIKitPresentationKit"))
+} else if frontend == "SwiftUI" {
+    dependencies.append(.package(path: "SwiftUIPresentationKit"))
+    targetDependencies.append(.product(name: "SwiftUIPresentationKit", package: "SwiftUIPresentationKit"))
+}
 
 let package = Package(
     name: "FlameSteelEngine2SceneEditor",
@@ -38,9 +40,13 @@ let package = Package(
             dependencies: targetDependencies,
             path: "src",
             resources: [.process("Resources")],
-            swiftSettings: [
-                .define("MACCATALYST", .when(platforms: [.macCatalyst]))
-            ]
+            swiftSettings: {
+                var settings: [SwiftSetting] = [
+                    .define("MACCATALYST", .when(platforms: [.macCatalyst]))
+                ]
+                settings.append(.define("PresentationKitFrontend_\(frontend)"))
+                return settings
+            }()
         )
     ]
 )

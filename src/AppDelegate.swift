@@ -7,7 +7,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let app = App()
-        app.setup()
+        app.setup(ioSystem: Factory.uikitIOSystem())
         return true
     }
 }

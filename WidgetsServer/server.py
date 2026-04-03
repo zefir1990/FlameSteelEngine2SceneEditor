@@ -139,6 +139,8 @@ class UDPWidgetServer:
             # Send back to client host:50052
             target_addr = (self.last_client_addr[0], 50052)
             self.sock.sendto(message, target_addr)
+        else:
+            print("no client to send action")
 
     def _add_text(self, wid, pid, text):
         parent = self.widgets.get(pid)
