@@ -2,17 +2,17 @@
 import PackageDescription
 
 let package = Package(
-    name: "MacOSPresentationKit",
+    name: "WxClientPresentationKit",
     platforms: [.macOS(.v10_15)],
     products: [
-        .library(name: "MacOSPresentationKit", targets: ["MacOSPresentationKit"])
+        .library(name: "WxClientPresentationKit", targets: ["WxClientPresentationKit"])
     ],
     dependencies: [
         .package(path: "../PresentationKit")
     ],
     targets: [
         .target(
-            name: "MacOSPresentationKit",
+            name: "WxClientPresentationKit",
             dependencies: [
                 .product(name: "PresentationKit", package: "PresentationKit")
             ]

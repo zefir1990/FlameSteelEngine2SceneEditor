@@ -5,26 +5,17 @@ var dependencies: [Package.Dependency] = [
     .package(path: "PresentationKit"),
     .package(path: "ReactiveTech"),
     .package(path: "SceneControls"),
-    .package(path: "EBox")
+    .package(path: "EBox"),
+    .package(path: "WxClientPresentationKit")
 ]
 
 var targetDependencies: [Target.Dependency] = [
     .product(name: "PresentationKit", package: "PresentationKit"),
     .product(name: "ReactiveTech", package: "ReactiveTech"),
     .product(name: "SceneControls", package: "SceneControls"),
-    .product(name: "EBox", package: "EBox")
+    .product(name: "EBox", package: "EBox"),
+    .product(name: "WxClientPresentationKit", package: "WxClientPresentationKit")
 ]
-
-#if os(Windows)
-dependencies.append(.package(path: "WindowsPresentationKit"))
-targetDependencies.append(.product(name: "WindowsPresentationKit", package: "WindowsPresentationKit"))
-#elseif os(Linux)
-dependencies.append(.package(path: "LinuxPresentationKit"))
-targetDependencies.append(.product(name: "LinuxPresentationKit", package: "LinuxPresentationKit"))
-#elseif os(macOS)
-dependencies.append(.package(path: "MacOSPresentationKit"))
-targetDependencies.append(.product(name: "MacOSPresentationKit", package: "MacOSPresentationKit"))
-#endif
 
 let package = Package(
     name: "FlameSteelEngine2SceneEditor",

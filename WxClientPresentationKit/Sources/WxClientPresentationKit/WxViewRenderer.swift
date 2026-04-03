@@ -2,14 +2,14 @@ import PresentationKit
 import Foundation
 
 @MainActor
-public class WindowsViewRenderer: ViewRenderer {
+public class WxViewRenderer: ViewRenderer {
     private let layer: Int
     private let parentView: (any View)?
     private let parentId: String?
     public let ioSystem: any IOSystem
 
-    private var windowsContext: WindowsIOSystem {
-        return ioSystem as! WindowsIOSystem
+    private var wxContext: WxIOSystem {
+        return ioSystem as! WxIOSystem
     }
 
     private func indent() -> String {
@@ -42,13 +42,13 @@ public class WindowsViewRenderer: ViewRenderer {
         // Extract the first Text label from the button's content
         let extractor = SimpleTextExtractor()
         button.label.accept(extractor)
-        let label = extractor.text ?? "Button"
+        let label = extractor.text.value ?? "Button"
 
         // Register the action block to be executed when the user clicks the button
-        windowsContext.interactor.registerAction(id: button.id, action: button.action)
+        wxContext.interactor.registerAction(id: button.id, action: button.action)
 
         // Command: AddButton with the extracted label
-        windowsContext.widgetsClient.send(command: "AddButton", args: [
+        wxContext.widgetsClient.send(command: "AddButton", args: [
             "id": currentId,
             "parentId": parentId ?? "",
             "label": label
@@ -63,7 +63,7 @@ public class WindowsViewRenderer: ViewRenderer {
         print("\(indent())visit Text (ID: \(currentId), Parent: \(parentId ?? "none")) - \(text.content)")
         
         // Command: AddText
-        windowsContext.widgetsClient.send(command: "AddText", args: [
+        wxContext.widgetsClient.send(command: "AddText", args: [
             "id": currentId,
             "parentId": parentId ?? "",
             "text": text.content
@@ -75,13 +75,13 @@ public class WindowsViewRenderer: ViewRenderer {
         print("\(indent())visit Panel (ID: \(currentId), Parent: \(parentId ?? "none"))")
         
         // Command: AddPanel
-        windowsContext.widgetsClient.send(command: "AddPanel", args: [
+        wxContext.widgetsClient.send(command: "AddPanel", args: [
             "id": currentId,
             "parentId": parentId ?? ""
         ])
 
         for child in panel.children {
-            let subRenderer = WindowsViewRenderer(parent: panel, layer: layer + 1, ioSystem: ioSystem, parentId: currentId)
+            let subRenderer = WxViewRenderer(parent: panel, layer: layer + 1, ioSystem: ioSystem, parentId: currentId)
             subRenderer.render(child)
         }
     }
@@ -91,14 +91,14 @@ public class WindowsViewRenderer: ViewRenderer {
         print("\(indent())visit ViewGroup (ID: \(currentId), Parent: \(parentId ?? "none"))")
         
         // Command: AddContainer (Vertical stack by default)
-        windowsContext.widgetsClient.send(command: "AddContainer", args: [
+        wxContext.widgetsClient.send(command: "AddContainer", args: [
             "id": currentId,
             "parentId": parentId ?? "",
             "type": "vertical"
         ])
 
         for view in viewGroup.views {
-            let subRenderer = WindowsViewRenderer(parent: viewGroup, layer: layer + 1, ioSystem: ioSystem, parentId: currentId)
+            let subRenderer = WxViewRenderer(parent: viewGroup, layer: layer + 1, ioSystem: ioSystem, parentId: currentId)
             subRenderer.render(view)
         }
     }
@@ -106,7 +106,7 @@ public class WindowsViewRenderer: ViewRenderer {
     public func visit(_ modifiedView: ModifiedView) {
         // Modified views typically adjust their child; for now, we just pass through
         // Note: For ModifiedView, we might want to keep the parentId as is since it doesn't create a new widget level yet
-        let subRenderer = WindowsViewRenderer(parent: modifiedView, layer: layer + 1, ioSystem: ioSystem, parentId: parentId)
+        let subRenderer = WxViewRenderer(parent: modifiedView, layer: layer + 1, ioSystem: ioSystem, parentId: parentId)
         subRenderer.render(modifiedView._content)
     }
 
@@ -117,13 +117,13 @@ public class WindowsViewRenderer: ViewRenderer {
         print("\(indent())visit ObjectsTreeView (ID: \(currentId), Parent: \(parentId ?? "none"))")
         
         // Command: AddText (Placeholder for TreeView)
-        windowsContext.widgetsClient.send(command: "AddText", args: [
+        wxContext.widgetsClient.send(command: "AddText", args: [
             "id": currentId,
             "parentId": parentId ?? "",
             "text": "[Hierarchical Objects Tree]"
         ])
 
-        let subRenderer = WindowsViewRenderer(parent: objectsTreeView, layer: layer + 1, ioSystem: ioSystem, parentId: currentId)
+        let subRenderer = WxViewRenderer(parent: objectsTreeView, layer: layer + 1, ioSystem: ioSystem, parentId: currentId)
         subRenderer.render(objectsTreeView.subviews)
     }
 
@@ -133,28 +133,14 @@ public class WindowsViewRenderer: ViewRenderer {
             print("Rendering root window (ID: \(currentId))")
             
             // Command: AddWindow (The root frame)
-            windowsContext.widgetsClient.send(command: "AddWindow", args: [
+            wxContext.widgetsClient.send(command: "AddWindow", args: [
                 "id": currentId,
                 "title": "\(type(of: view))"
             ])
         }
 
-        let subRenderer = WindowsViewRenderer(parent: view, layer: layer + 1, ioSystem: ioSystem, parentId: currentId)
+        let subRenderer = WxViewRenderer(parent: view, layer: layer + 1, ioSystem: ioSystem, parentId: currentId)
         subRenderer.render(view.subviews)
     }
 }
 
-/// Helper visitor to extract the first Text content found in a view tree.
-@MainActor
-private class SimpleTextExtractor: ViewVisitor {
-    var text: String? = nil
-
-    func visit(_ button: Button) { button.label.accept(self) }
-    func visit(_ text: Text) { if self.text == nil { self.text = text.content } }
-    func visit(_ panel: Panel) { for child in panel.children { if text == nil { child.accept(self) } } }
-    func visit(_ viewGroup: ViewGroup) { for view in viewGroup.views { if text == nil { view.accept(self) } } }
-    func visit(_ modifiedView: ModifiedView) { modifiedView._content.accept(self) }
-    func visit(_ emptyView: EmptyView) {}
-    func visit(_ objectsTreeView: ObjectsTreeView) {}
-    func visit(_ view: any View) { view.subviews.accept(self) }
-}

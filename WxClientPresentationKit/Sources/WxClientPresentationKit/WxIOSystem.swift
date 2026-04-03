@@ -1,14 +1,14 @@
 import PresentationKit
 
 @MainActor
-public struct WindowsIOSystem: IOSystem {
+public struct WxIOSystem: IOSystem {
     public let widgetsClient: WidgetsClient
-    public let interactor: WindowsInteractor
+    public let interactor: WxInteractor
     private let mainView: any View
 
     public init(
         widgetsClient: WidgetsClient, 
-        interactor: WindowsInteractor,
+        interactor: WxInteractor,
         mainView: any View
     ) {
         self.widgetsClient = widgetsClient
@@ -18,7 +18,7 @@ public struct WindowsIOSystem: IOSystem {
     }
 
     public func viewRenderer(parent: (any View)?) -> any ViewRenderer {
-        return WindowsViewRenderer(parent: parent, ioSystem: self)
+        return WxViewRenderer(parent: parent, ioSystem: self)
     }
 
     public func shutdown() {
