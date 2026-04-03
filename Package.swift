@@ -20,12 +20,14 @@ var targetDependencies: [Target.Dependency] = [
 #if os(macOS)
 dependencies.append(.package(path: "SwiftUIPresentationKit"))
 targetDependencies.append(.product(name: "SwiftUIPresentationKit", package: "SwiftUIPresentationKit"))
+dependencies.append(.package(path: "UIKitPresentationKit"))
+targetDependencies.append(.product(name: "UIKitPresentationKit", package: "UIKitPresentationKit"))
 #endif
 
 let package = Package(
     name: "FlameSteelEngine2SceneEditor",
     defaultLocalization: "en",
-    platforms: [.macOS(.v12)],
+    platforms: [.macOS(.v12), .macCatalyst(.v13)],
     dependencies: dependencies,
     targets: [
         .executableTarget(
