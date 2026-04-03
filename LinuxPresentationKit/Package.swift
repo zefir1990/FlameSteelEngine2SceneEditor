@@ -3,6 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "LinuxPresentationKit",
+    platforms: [.macOS(.v10_15)],
     products: [
         .library(name: "LinuxPresentationKit", targets: ["LinuxPresentationKit"])
     ],

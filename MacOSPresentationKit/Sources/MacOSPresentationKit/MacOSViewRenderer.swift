@@ -9,7 +9,7 @@ public class MacOSViewRenderer: ViewRenderer {
         return String(repeating: "  ", count: depth)
     }
 
-    public required init(parent: (any View)?, ioSystem: any IOSystem = DefaultIOSystem()) {
+    public required init(parent: (any View)?, ioSystem: any IOSystem) {
         self.ioSystem = ioSystem
         self.depth = 0
     }

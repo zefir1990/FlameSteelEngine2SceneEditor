@@ -12,19 +12,16 @@ public enum Factory {
     @MainActor
     public static func ioSystem() -> (any IOSystem) {
         #if os(macOS)
-        let ioSystem = DefaultIOSystem()
-        return MacOSViewRenderer(parent: nil, ioSystem: ioSystem)
+        return MacOSIOSystem(mainView: MainScreen())
         #elseif os(Windows)
         let client = WidgetsClient()
         let interactor = WindowsInteractor()
         let ioSystem = WindowsIOSystem(widgetsClient: client, interactor: interactor, mainView: MainScreen())
         return ioSystem
         #elseif os(Linux)
-        let ioSystem = DefaultIOSystem()
-        return LinuxViewRenderer(parent: nil, ioSystem: ioSystem)
+        return LinuxIOSystem(mainView: MainScreen())
         #else
-        let context = DefaultIOSystem()
-        return ConsoleViewRenderer(parent: nil, ioSystem: ioSystem)
+        return DefaultIOSystem(mainView: MainScreen())
         #endif
     }
 }

@@ -29,6 +29,7 @@ targetDependencies.append(.product(name: "MacOSPresentationKit", package: "MacOS
 let package = Package(
     name: "FlameSteelEngine2SceneEditor",
     defaultLocalization: "en",
+    platforms: [.macOS(.v10_15)],
     dependencies: dependencies,
     targets: [
         .executableTarget(

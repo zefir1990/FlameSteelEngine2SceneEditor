@@ -7,7 +7,7 @@ public class ConsoleViewRenderer: ViewRenderer {
         return String(repeating: "  ", count: depth)
     }
 
-    public required init(parent: (any View)? = nil, ioSystem: any IOSystem = DefaultIOSystem()) {
+    public required init(parent: (any View)? = nil, ioSystem: any IOSystem) {
         self.ioSystem = ioSystem
         self.depth = 0
     }

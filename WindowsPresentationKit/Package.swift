@@ -3,6 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "WindowsPresentationKit",
+    platforms: [.macOS(.v10_15)],
     products: [
         .library(name: "WindowsPresentationKit", targets: ["WindowsPresentationKit"])
     ],
