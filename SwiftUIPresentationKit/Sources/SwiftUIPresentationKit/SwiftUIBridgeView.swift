@@ -1,3 +1,4 @@
+#if os(macOS) && !targetEnvironment(macCatalyst)
 import PresentationKit
 import SwiftUI
 
@@ -10,14 +11,15 @@ public struct SwiftUIBridgeView: SwiftUI.View {
     }
     
     public var body: some SwiftUI.View {
-        Group {
+        SwiftUI.Group {
             if let rootView = renderer.rootView {
                 SwiftUIMapper.map(rootView)
             } else {
-                Text("Rendering Engine View...")
+                SwiftUI.Text("Rendering Engine View...")
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
     }
 }
+#endif

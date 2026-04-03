@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "WxClientPresentationKit",
-    platforms: [.macOS(.v10_15)],
+    platforms: [.macOS(.v12), .iOS(.v14), .macCatalyst(.v14)],
     products: [
         .library(name: "WxClientPresentationKit", targets: ["WxClientPresentationKit"])
     ],

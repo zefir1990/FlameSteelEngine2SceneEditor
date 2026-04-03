@@ -17,9 +17,12 @@ var targetDependencies: [Target.Dependency] = [
     .product(name: "WxClientPresentationKit", package: "WxClientPresentationKit")
 ]
 
-#if os(macOS)
+#if os(macOS) && !targetEnvironment(macCatalyst)
 dependencies.append(.package(path: "SwiftUIPresentationKit"))
 targetDependencies.append(.product(name: "SwiftUIPresentationKit", package: "SwiftUIPresentationKit"))
+#endif
+
+#if os(macOS) || os(iOS) || targetEnvironment(macCatalyst)
 dependencies.append(.package(path: "UIKitPresentationKit"))
 targetDependencies.append(.product(name: "UIKitPresentationKit", package: "UIKitPresentationKit"))
 #endif
@@ -27,14 +30,17 @@ targetDependencies.append(.product(name: "UIKitPresentationKit", package: "UIKit
 let package = Package(
     name: "FlameSteelEngine2SceneEditor",
     defaultLocalization: "en",
-    platforms: [.macOS(.v12), .macCatalyst(.v13)],
+    platforms: [.macOS(.v12), .iOS(.v14), .macCatalyst(.v14)],
     dependencies: dependencies,
     targets: [
         .executableTarget(
             name: "FlameSteelEngine2SceneEditor",
             dependencies: targetDependencies,
             path: "src",
-            resources: [.process("Resources")]
+            resources: [.process("Resources")],
+            swiftSettings: [
+                .define("MACCATALYST", .when(platforms: [.macCatalyst]))
+            ]
         )
     ]
 )

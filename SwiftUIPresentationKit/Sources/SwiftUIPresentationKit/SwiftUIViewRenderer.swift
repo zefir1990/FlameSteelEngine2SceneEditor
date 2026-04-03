@@ -1,3 +1,4 @@
+#if os(macOS) && !targetEnvironment(macCatalyst)
 import PresentationKit
 import SwiftUI
 
@@ -25,3 +26,4 @@ public class SwiftUIViewRenderer: ObservableObject, ViewRenderer {
     public func visit(_ objectsTreeView: ObjectsTreeView) {}
     public func visit(_ view: any PresentationKit.View) { render(view) }
 }
+#endif

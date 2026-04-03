@@ -1,6 +1,9 @@
+#if os(macOS) && !targetEnvironment(macCatalyst)
 import PresentationKit
 import SwiftUI
+#if canImport(AppKit)
 import AppKit
+#endif
 
 @MainActor
 public class SwiftUIIOSystem: IOSystem {
@@ -26,10 +29,13 @@ public class SwiftUIIOSystem: IOSystem {
     }
     
     public func shutdown() {
+        #if canImport(AppKit)
         NSApp.terminate(nil)
+        #endif
     }
     
     private func startSwiftUI() {
+        #if canImport(AppKit)
         let app = NSApplication.shared
         app.setActivationPolicy(.regular)
         
@@ -48,8 +54,12 @@ public class SwiftUIIOSystem: IOSystem {
         window.makeKeyAndOrderFront(nil)
         
         app.activate(ignoringOtherApps: true)
+        #else
+        print("SwiftUIIOSystem: startSwiftUI is currently implemented for native macOS AppKit only. On Catalyst, use UIKitPresentationKit or a SwiftUI App lifecycle.")
+        #endif
     }
 
+    #if canImport(AppKit)
     private func setupMenu() {
         let mainMenu = NSMenu()
         let appMenuItem = NSMenuItem()
@@ -60,4 +70,6 @@ public class SwiftUIIOSystem: IOSystem {
         appMenuItem.submenu = appMenu
         NSApplication.shared.mainMenu = mainMenu
     }
+    #endif
 }
+#endif

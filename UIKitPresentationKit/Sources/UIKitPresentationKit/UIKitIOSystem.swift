@@ -1,4 +1,3 @@
-#if canImport(UIKit)
 import UIKit
 import PresentationKit
 
@@ -6,6 +5,7 @@ import PresentationKit
 public class UIKitIOSystem: IOSystem {
     private let mainView: any PresentationKit.View
     private let renderer: UIKitViewRenderer
+    private var window: UIWindow?
     
     public init(mainView: any PresentationKit.View) {
         self.mainView = mainView
@@ -29,18 +29,10 @@ public class UIKitIOSystem: IOSystem {
     
     private func startUIKit() {
         // This assumes a UIKit environment (like Mac Catalyst) where a UIWindow can be created.
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-            let window = UIWindow(windowScene: windowScene)
-            renderer.render(mainView)
-            window.rootViewController = renderer.rootViewController
-            window.makeKeyAndVisible()
-        } else {
-            // Fallback for non-SceneDelegate environments
-            let window = UIWindow(frame: UIScreen.main.bounds)
-            renderer.render(mainView)
-            window.rootViewController = renderer.rootViewController
-            window.makeKeyAndVisible()
-        }
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        renderer.render(mainView)
+        window.rootViewController = renderer.rootViewController
+        window.makeKeyAndVisible()
+        self.window = window
     }
 }
-#endif
