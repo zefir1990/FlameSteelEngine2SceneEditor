@@ -14,14 +14,16 @@ struct MainScreen: View {
         ObjectsTreeView(objects: mainScreenContext.objects)
             .preferredSize(.small)
         Panel {
-            Button {
-                print("Save scene action")
-            } label: {
+            Button({
+                debugPrint("!!! Save scene action !!!")
+                NSLog("!!! Save scene action !!!")
+            }) {
                 Text(_L("save_scene"))
             }
-            Button {
-                print("Load scene action")
-            } label: {
+            Button({
+                debugPrint("!!! Load scene action !!!")
+                NSLog("!!! Load scene action !!!")
+            }) {
                 Text(_L("load_scene"))
             }
         }
